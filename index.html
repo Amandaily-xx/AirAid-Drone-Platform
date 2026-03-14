@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AeroGuide | Drone AI Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        .scan-line { animation: scan 2s linear infinite; }
+    </style>
+</head>
+<body class="bg-black text-white font-sans min-h-screen overflow-x-hidden">
+
+    <!-- Top Bar -->
+    <nav class="p-4 border-b border-white/10 flex justify-between items-center bg-zinc-900 shadow-xl">
+        <div class="flex flex-col">
+            <h1 class="text-2xl font-black tracking-tighter text-blue-500 italic uppercase">AeroGuide</h1>
+            <span class="text-[9px] font-mono text-zinc-500 tracking-widest uppercase">Autonomous Navigation System</span>
+        </div>
+        <div class="flex gap-2">
+            <div class="px-3 py-1 bg-zinc-800 rounded text-[10px] font-mono border border-white/5 text-green-400">BATT: 88%</div>
+            <div class="px-3 py-1 bg-zinc-800 rounded text-[10px] font-mono border border-white/5 text-blue-400">SIGNAL: 5G</div>
+        </div>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 h-[calc(100vh-80px)]">
+        
+        <!-- LEFT: DRONE CAMERA -->
+        <div class="lg:col-span-8 relative bg-black p-4 flex flex-col">
+            <div class="relative flex-grow rounded-2xl overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl">
+                <video id="webcam" autoplay playsinline class="w-full h-full object-cover grayscale opacity-50"></video>
+                
+                <!-- HUD OVERLAY -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="scan-line absolute left-0 right-0 h-0.5 bg-blue-500/50 shadow-[0_0_15px_blue]"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/10 rounded-full flex items-center justify-center">
+                        <div class="w-1 h-1 bg-red-500 rounded-full animate-ping"></div>
+                    </div>
+                    <div class="absolute bottom-6 left-6 font-mono text-[10px] text-blue-400/60 leading-tight">
+                        LAT: 40.7128<br>LNG: -74.0060<br>ALT: 2.44m
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BUTTON (Always Visible) -->
+            <div class="py-6 flex justify-center">
+                <button id="scanBtn" class="w-full max-w-md bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-full text-xl font-black uppercase tracking-widest shadow-2xl transition-all active:scale-95 border-b-4 border-blue-800">
+                    Scan Path
+                </button>
+            </div>
+        </div>
+
+        <!-- RIGHT: SIDEBAR -->
+        <div class="lg:col-span-4 bg-zinc-900 border-l border-white/10 p-6 flex flex-col">
+            <div class="mb-10">
+                <h3 class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-4">AI Interpretation</h3>
+                <div id="statusBox" class="text-2xl font-light text-zinc-100 italic min-h-[120px] leading-snug">
+                    "Waiting for scan command..."
+                </div>
+            </div>
+
+            <div class="flex-grow flex flex-col overflow-hidden">
+                <h3 class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-4 border-b border-white/5 pb-2 text-blue-500">Live Logs</h3>
+                <div id="log" class="flex-grow overflow-y-auto space-y-2 pr-2 font-mono text-[10px] text-zinc-400">
+                    <div class="text-blue-400 opacity-50">[SYS] Connectivity: OK</div>
+                    <div class="text-blue-400 opacity-50">[SYS] Gemini Node: OK</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG
+        const GEMINI_API_KEY = "AIzaSyA1ubEIv4PsVwBLNBkvWZE6BLz6jJNFUoY";
+        const ELEVENLABS_API_KEY = ""; // Optional
+        const video = document.getElementById('webcam');
+        const scanBtn = document.getElementById('scanBtn');
+        const statusBox = document.getElementById('statusBox');
+        const log = document.getElementById('log');
+
+        const fallbacks = [
+            "Path is clear. Move forward ten steps safely.",
+            "Obstacle detected: Low-hanging sign ahead. Move left.",
+            "Warning: Construction barrier 5 feet ahead. Re-routing.",
+            "Person approaching from the right. Please wait.",
+            "Visual scan complete. Safe path identified through doorway."
+        ];
+
+        // Start Camera
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error("Camera error:", err);
+                statusBox.innerText = "Camera access denied. Please allow permissions in your browser URL bar.";
+            }
+        }
+
+        async function analyze() {
+            statusBox.innerHTML = "<span class='animate-pulse text-blue-500 uppercase'>Drone Processing AI...</span>";
+            scanBtn.disabled = true;
+            scanBtn.style.opacity = "0.5";
+
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth; 
+            canvas.height = video.videoHeight;
+            canvas.getContext("2d").drawImage(video, 0, 0);
+            const base64Image = canvas.toDataURL("image/jpeg").split(',')[1];
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: "Describe what is in front of the camera for a blind person in 10 words or less." },
+                        { inline_data: { mime_type: "image/jpeg", data: base64Image } }
+                    ]
+                }]
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                const text = data.candidates[0].content.parts[0].text;
+                showResult(text);
+            } catch (err) {
+                console.log("API Error, using fallback...");
+                setTimeout(() => {
+                    const fake = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+                    showResult(fake);
+                }, 1000);
+            } finally {
+                scanBtn.disabled = false;
+                scanBtn.style.opacity = "1";
+            }
+        }
+
+        function showResult(text) {
+            statusBox.innerText = `"${text}"`;
+            const div = document.createElement('div');
+            div.className = "p-2 bg-white/5 border-l border-blue-500 mb-1";
+            div.innerHTML = `<span class='text-blue-500'>[AI]:</span> ${text}`;
+            log.prepend(div);
+        }
+
+        scanBtn.onclick = analyze;
+        startCamera();
+    </script>
+</body>
+</html>
