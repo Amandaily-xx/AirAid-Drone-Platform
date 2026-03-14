@@ -1,10 +1,21 @@
-# AirAid: AI-Powered Autonomous Drone Navigation for the Visually Impaired
+# AirAid: Personal AI Drone Navigator
 
-**AirAid** is a drone-powered service platform designed to provide independence to the 253 million people worldwide living with visual impairments. While traditional tools like white canes and service dogs detect ground-level obstacles, they fail to identify overhead hazards, fast-moving traffic, or complex environmental changes. 
+AirAid is a software platform that converts drone technology into a comprehensive navigation service for the visually impaired. 
 
-AirAid turns drones into "Flying Service Dogs" that scan the environment and provide real-time, natural language audio guidance to the user.
+## 🌟 Core Product Workflow
+Our system provides a hands-free, end-to-end navigation experience:
+1. **Voice-to-Destination:** User speaks their destination into the app (e.g., "Take me to the pharmacy").
+2. **Optimal Routing:** Using **Gemini** in conjunction with **Google Maps API**, AirAid calculates the most accessible pedestrian route.
+3. **Real-Time Hazard Scanning:** The drone hovers ahead, using **Gemini 1.5 Flash Vision** to monitor for real-time obstacles (scooters, branches, puddles).
+4. **Adaptive Audio Feedback:** Instructions are sent to the user via **ElevenLabs**, providing natural guidance like "Walk straight," "Hazard ahead, stop," or "Turn left in 10 steps."
 
----
+## 🛠️ Key Features
+- **Aerial Pathfinding:** Unlike ground GPS, the drone sees the path from 8 feet up, identifying clear walk-zones before the user arrives.
+- **Smart Hazard Detection:** Leverages Google Gemini to differentiate between a static object (a trash can) and a moving hazard (a cyclist).
+- **Decentralized Infrastructure:** 
+    - **Solana:** Securely handles micro-payments for drone flight credits.
+    - **MongoDB Atlas:** Caches "User History" for recurring routes (e.g., Home to Grocery Store).
+    - **Snowflake:** Aggregates hazard data across multiple drones to create a city-wide "Blind-Safe" heat map.
 
 ## 🚀 The Problem
 - **Ground-Level Limitation:** White canes only detect what is at the user's feet. Low-hanging branches, construction signs, and open truck tailgates are frequent causes of injury.
@@ -37,27 +48,6 @@ Integrated as our "Pay-as-you-fly" layer. Using Solana’s low-latency blockchai
 
 ### 5. Snowflake (City Safety Analytics)
 Snowflake acts as our data warehouse, aggregating hazard data from thousands of drones to create a "Live Safety Map." This allows city planners to identify dangerous intersections based on real drone telemetry.
-
----
-
-## 💻 How to Run the Prototype
-
-1. Clone this repository.
-2. Open `index.html` in any modern web browser (Chrome/Edge recommended).
-3. Ensure you have granted Camera Permissions.
-4. (Optional) Insert your **Gemini** and **ElevenLabs** API keys in the configuration section of the script.
-5. Point the camera at an object and click **"Scan Path"**.
-
----
-
-## 📈 Business Model
-- **Subscription (SaaS):** $49/month for hardware lease and unlimited AI navigation.
-- **B2B / Government:** Partnering with municipal "Smart City" initiatives to provide the service as a public utility.
-- **Data Licensing:** Selling anonymized sidewalk-level hazard data to urban planners.
-
-## 🔮 Future Roadmap
-- **V2:** Indoor navigation using LiDAR for airports and shopping malls.
-- **V3:** Integration with smart traffic lights (V2X) to tell users exactly when it is safe to cross.
 
 ---
 **Created for the Drone-Based Startup Challenge (March 2026)**
