@@ -1,8 +1,8 @@
-# AeroGuide: AI-Powered Autonomous Drone Navigation for the Visually Impaired
+# AirAid: AI-Powered Autonomous Drone Navigation for the Visually Impaired
 
-**AeroGuide** is a drone-powered service platform designed to provide independence to the 253 million people worldwide living with visual impairments. While traditional tools like white canes and service dogs detect ground-level obstacles, they fail to identify overhead hazards, fast-moving traffic, or complex environmental changes. 
+**AirAid** is a drone-powered service platform designed to provide independence to the 253 million people worldwide living with visual impairments. While traditional tools like white canes and service dogs detect ground-level obstacles, they fail to identify overhead hazards, fast-moving traffic, or complex environmental changes. 
 
-AeroGuide turns drones into "Flying Service Dogs" that scan the environment and provide real-time, natural language audio guidance to the user.
+AirAid turns drones into "Flying Service Dogs" that scan the environment and provide real-time, natural language audio guidance to the user.
 
 ---
 
@@ -12,7 +12,7 @@ AeroGuide turns drones into "Flying Service Dogs" that scan the environment and 
 - **Static Navigation:** Current GPS apps don't account for real-time hazards like temporary construction or sidewalk crowds.
 
 ## ✨ The Solution
-AeroGuide is a software-first platform that leverages advanced AI Vision to process drone video feeds in real-time. 
+AirAid is a software-first platform that leverages advanced AI Vision to process drone video feeds in real-time. 
 1. **Scene Understanding:** Identifying hazards, doorways, crosswalks, and people.
 2. **Audio Feedback:** Providing calm, human-like instructions via Bluetooth earpieces.
 3. **Safety Analysis:** Pre-fetching "Safe Paths" using historical city data.
