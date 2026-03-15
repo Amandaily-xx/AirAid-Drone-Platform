@@ -1,6 +1,6 @@
 # AeroGuide: Independence Redefined 🛰️👨‍🦯
 
-**AeroGuide** is a software-first drone service platform designed to act as a "Flying Service Dog" for the visually impaired. Developed for the **Drone-Based Startup Challenge (March 2026)**, our platform bridges the gap between traditional navigation tools and the dynamic challenges of urban environments like the McGill University campus in Montreal.
+**AeroGuide** is a software-first drone service platform designed to act as a "Flying Service Dog" for the visually impaired. Developed for the **NcGill AeroHacks _Drone-Based Startup Challenge (March 2026)**, our platform bridges the gap between traditional navigation tools and the dynamic challenges of urban environments like the McGill University campus in Montreal.
 
 ---
 
