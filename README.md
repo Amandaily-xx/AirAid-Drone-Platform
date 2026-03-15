@@ -1,53 +1,66 @@
-# AirAid: Personal AI Drone Navigator
+# AeroGuide: Independence Redefined 🛰️👨‍🦯
 
-AirAid is a software platform that converts drone technology into a comprehensive navigation service for the visually impaired. 
+**AeroGuide** is a software-first drone service platform designed to act as a "Flying Service Dog" for the visually impaired. Developed for the **Drone-Based Startup Challenge (March 2026)**, our platform bridges the gap between traditional navigation tools and the dynamic challenges of urban environments like the McGill University campus in Montreal.
 
-## 🌟 Core Product Workflow
-Our system provides a hands-free, end-to-end navigation experience:
-1. **Voice-to-Destination:** User speaks their destination into the app (e.g., "Take me to the pharmacy").
-2. **Optimal Routing:** Using **Gemini** in conjunction with **Google Maps API**, AirAid calculates the most accessible pedestrian route.
-3. **Real-Time Hazard Scanning:** The drone hovers ahead, using **Gemini 1.5 Flash Vision** to monitor for real-time obstacles (scooters, branches, puddles).
-4. **Adaptive Audio Feedback:** Instructions are sent to the user via **ElevenLabs**, providing natural guidance like "Walk straight," "Hazard ahead, stop," or "Turn left in 10 steps."
+---
 
-## 🛠️ Key Features
-- **Aerial Pathfinding:** Unlike ground GPS, the drone sees the path from 8 feet up, identifying clear walk-zones before the user arrives.
-- **Smart Hazard Detection:** Leverages Google Gemini to differentiate between a static object (a trash can) and a moving hazard (a cyclist).
-- **Decentralized Infrastructure:** 
-    - **Solana:** Securely handles micro-payments for drone flight credits.
-    - **MongoDB Atlas:** Caches "User History" for recurring routes (e.g., Home to Grocery Store).
-    - **Snowflake:** Aggregates hazard data across multiple drones to create a city-wide "Blind-Safe" heat map.
+## 🚀 The Problem: The "Overhead" Gap
+Current assistive technologies for the 253 million people with visual impairments have critical failure points:
+- **White Canes:** Only detect ground-level obstacles; users remain vulnerable to low-hanging branches, construction signs, and open truck tailgates.
+- **Service Dogs:** Cost upwards of **$50,000** to train and require high maintenance.
+- **Static Navigation:** Traditional GPS apps are "blind" to dynamic hazards like e-scooters, temporary construction, or winter icy patches common in Montreal.
 
-## 🚀 The Problem
-- **Ground-Level Limitation:** White canes only detect what is at the user's feet. Low-hanging branches, construction signs, and open truck tailgates are frequent causes of injury.
-- **High Cost of Entry:** Service dogs cost upwards of $50,000 to train and require significant maintenance.
-- **Static Navigation:** Current GPS apps don't account for real-time hazards like temporary construction or sidewalk crowds.
+## ✨ The Solution: Aerial Intelligence
+AeroGuide leverages advanced AI Vision and autonomous drone technology to provide a hands-free, end-to-end navigation experience.
 
-## ✨ The Solution
-AirAid is a software-first platform that leverages advanced AI Vision to process drone video feeds in real-time. 
-1. **Scene Understanding:** Identifying hazards, doorways, crosswalks, and people.
-2. **Audio Feedback:** Providing calm, human-like instructions via Bluetooth earpieces.
-3. **Safety Analysis:** Pre-fetching "Safe Paths" using historical city data.
+### 🌟 Core Product Workflow
+1. **Voice-to-Destination:** User initiates a trip via voice (e.g., *"Take me to the McGill Arts Building"*).
+2. **Optimal Routing:** **Gemini**, integrated with the **Google Maps API**, calculates the most accessible pedestrian route.
+3. **Real-Time Hazard Scanning:** A drone hovers 8 feet ahead, acting as a forward-scouting sensor.
+4. **Adaptive Audio Feedback:** Real-time instructions (e.g., *"Stop. Construction barrier ahead. Pivot left"*) are delivered via **ElevenLabs**.
 
 ---
 
 ## 🛠️ Technology Stack & Sponsor Integrations
 
-To be eligible for sponsor tracks, we have functionally integrated the following tools:
+We have functionally integrated the following sponsor tools to power our platform:
 
-### 1. Google Gemini API (Visual Reasoning)
-Used as the "eyes" of the platform. Gemini 1.5 Flash processes the drone's camera frames to describe the environment and identify specific hazards that a white cane would miss.
+### 🧠 Google Gemini API (Visual Reasoning)
+Gemini 1.5 Flash serves as the "Visual Cortex" of AeroGuide. It processes the drone's live feed to differentiate between harmless shadows and dangerous obstacles, providing the semantic data required for safe navigation.
 
-### 2. ElevenLabs (Human-Like Voice)
-Used to convert AI-generated navigation instructions into natural, comforting speech. This ensures the user receives guidance that feels professional and easy to understand in noisy city environments.
+### 🗣️ ElevenLabs (Natural Audio Interface)
+Safety depends on trust. We use ElevenLabs to provide high-fidelity, natural human voices for guidance. This ensures a calm and professional user experience, even in noisy city environments.
 
-### 3. MongoDB Atlas (Safe-Path Database)
-We use MongoDB Atlas to store "Safe Path" logs. When a drone scans a route, the coordinates and hazards are cached so that future users on the same path receive instant navigation without re-processing the entire scene.
+### 💾 MongoDB Atlas (Safe-Path Caching)
+We utilize MongoDB Atlas to store "Path Signatures." Frequently traveled routes (e.g., McGill Metro to Roddick Gates) are cached, allowing for instant safety data retrieval and reduced latency.
 
-### 4. Solana (Micro-Payments)
-Integrated as our "Pay-as-you-fly" layer. Using Solana’s low-latency blockchain, users pay for AI processing power in real-time using micro-transactions, making the service affordable and transparent.
+### ⛓️ Solana (Decentralized Micro-Payments)
+AeroGuide uses a "Pay-as-you-fly" model. Solana handles ultra-low-cost micro-transactions, allowing users to pay for AI compute credits in real-time with sub-second finality.
 
-### 5. Snowflake (City Safety Analytics)
-Snowflake acts as our data warehouse, aggregating hazard data from thousands of drones to create a "Live Safety Map." This allows city planners to identify dangerous intersections based on real drone telemetry.
+### ❄️ Snowflake (Predictive Hazard Analytics)
+Telemetry from all active drones is aggregated into a Snowflake Data Cloud to create a "Live Safety Map" of Montreal, allowing us to predict dangerous intersections before a user even arrives.
 
 ---
-**Created for the Drone-Based Startup Challenge (March 2026)**
+
+## 🛠️ Key Features
+- **Aerial Pathfinding:** Identifying walk-zones from a perspective white canes cannot reach.
+- **Dynamic Obstacle Avoidance:** Real-time tracking of cyclists, pedestrians, and vehicles.
+- **McGill-Ready Localization:** Optimized for the unique street layouts and construction challenges of Downtown Montreal.
+
+## 📈 Business Model
+- **Hardware-as-a-Service (HaaS):** A $49/month subscription providing the drone, insurance, and unlimited AI processing.
+- **B2G Partnerships:** Working with the Ville de Montréal to integrate AeroGuide into municipal accessibility initiatives.
+- **Data Licensing:** Providing sidewalk-level hazard data to urban planners via the Snowflake Data Cloud.
+
+---
+
+## 💻 How to Run the Prototype
+1. Clone this repository.
+2. Open `index.html` in a modern web browser.
+3. Grant **Camera Permissions** to simulate the Drone Eye.
+4. Use the **"Set Destination"** button to initiate the McGill navigation logic.
+5. Use the **"Process Environment"** button to trigger the Gemini-powered hazard detection.
+
+---
+**Developed for the Drone-Based Startup Challenge (March 2026)**  
+*Empowering independence through autonomous flight.*
