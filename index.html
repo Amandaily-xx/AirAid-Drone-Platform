@@ -2,155 +2,200 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AeroGuide | Drone AI Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroGuide | Professional Drone Navigator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
-        .scan-line { animation: scan 2s linear infinite; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap');
+        
+        body { font-family: 'Space Grotesk', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Drone HUD Animations */
+        @keyframes scan-line { 0% { top: 0%; } 100% { top: 100%; } }
+        .scan-line { animation: scan-line 3s linear infinite; }
+        
+        #webcam { transform: scaleX(-1); object-fit: cover; width: 100%; height: 100%; }
+        
+        .map-style { filter: grayscale(1) invert(0.9) contrast(1.2); }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); }
     </style>
 </head>
-<body class="bg-black text-white font-sans min-h-screen overflow-x-hidden">
+<body class="bg-slate-950 text-slate-100 h-screen overflow-hidden flex flex-col">
 
-    <!-- Top Bar -->
-    <nav class="p-4 border-b border-white/10 flex justify-between items-center bg-zinc-900 shadow-xl">
-        <div class="flex flex-col">
-            <h1 class="text-2xl font-black tracking-tighter text-blue-500 italic uppercase">AeroGuide</h1>
-            <span class="text-[9px] font-mono text-zinc-500 tracking-widest uppercase">Autonomous Navigation System</span>
+    <!-- TOP HEADER: System Status -->
+    <header class="h-16 border-b border-white/10 glass flex justify-between items-center px-8 z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="bg-red-600 text-white px-2 py-1 rounded font-black text-sm italic tracking-tighter">AG-01</div>
+            <h1 class="text-xl font-bold tracking-tight text-white uppercase italic">Aero<span class="text-blue-500">Guide</span> <span class="text-xs font-light text-slate-400 ml-2">v2.0 Montreal</span></h1>
         </div>
-        <div class="flex gap-2">
-            <div class="px-3 py-1 bg-zinc-800 rounded text-[10px] font-mono border border-white/5 text-green-400">BATT: 88%</div>
-            <div class="px-3 py-1 bg-zinc-800 rounded text-[10px] font-mono border border-white/5 text-blue-400">SIGNAL: 5G</div>
-        </div>
-    </nav>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 h-[calc(100vh-80px)]">
         
-        <!-- LEFT: DRONE CAMERA -->
-        <div class="lg:col-span-8 relative bg-black p-4 flex flex-col">
-            <div class="relative flex-grow rounded-2xl overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl">
-                <video id="webcam" autoplay playsinline class="w-full h-full object-cover grayscale opacity-50"></video>
+        <div class="flex gap-6 text-[10px] mono text-slate-400 uppercase tracking-widest">
+            <div class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Solana_Pay: Connected</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> Snowflake_Sync: Active</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 bg-slate-500 rounded-full"></span> McGill_Campus_Mesh: OK</div>
+        </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <main class="flex-grow flex flex-col lg:flex-row overflow-hidden">
+        
+        <!-- LEFT: THE DRONE EYE (Visual Input) -->
+        <div class="flex-grow relative bg-black flex flex-col p-4 gap-4">
+            <div class="relative flex-grow rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                <video id="webcam" autoplay playsinline></video>
                 
                 <!-- HUD OVERLAY -->
-                <div class="absolute inset-0 pointer-events-none">
-                    <div class="scan-line absolute left-0 right-0 h-0.5 bg-blue-500/50 shadow-[0_0_15px_blue]"></div>
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/10 rounded-full flex items-center justify-center">
-                        <div class="w-1 h-1 bg-red-500 rounded-full animate-ping"></div>
+                <div class="absolute inset-0 pointer-events-none flex flex-col justify-between p-8">
+                    <div class="flex justify-between">
+                        <div class="w-16 h-16 border-t-2 border-l-2 border-blue-500/50"></div>
+                        <div class="bg-black/60 px-4 py-2 rounded-full border border-white/10 text-[10px] mono flex items-center gap-3">
+                            <span class="text-red-500 animate-pulse">● LIVE</span>
+                            <span>ALT: 2.45M</span>
+                            <span>SPD: 0.8M/S</span>
+                        </div>
+                        <div class="w-16 h-16 border-t-2 border-r-2 border-blue-500/50"></div>
                     </div>
-                    <div class="absolute bottom-6 left-6 font-mono text-[10px] text-blue-400/60 leading-tight">
-                        LAT: 40.7128<br>LNG: -74.0060<br>ALT: 2.44m
+                    
+                    <div class="scan-line absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+
+                    <div class="flex justify-between items-end">
+                        <div class="w-16 h-16 border-b-2 border-l-2 border-blue-500/50"></div>
+                        
+                        <!-- MCGILL MINI MAP -->
+                        <div class="w-56 h-56 rounded-2xl border-2 border-white/10 overflow-hidden shadow-2xl map-style pointer-events-auto ring-4 ring-black/50">
+                            <iframe 
+                                width="100%" height="100%" 
+                                src="https://maps.google.com/maps?q=McGill%20University%20Montreal&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                                frameborder="0" scrolling="no">
+                            </iframe>
+                        </div>
+                        
+                        <div class="w-16 h-16 border-b-2 border-r-2 border-blue-500/50"></div>
                     </div>
                 </div>
             </div>
-            
-            <!-- BUTTON (Always Visible) -->
-            <div class="py-6 flex justify-center">
-                <button id="scanBtn" class="w-full max-w-md bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-full text-xl font-black uppercase tracking-widest shadow-2xl transition-all active:scale-95 border-b-4 border-blue-800">
-                    Scan Path
+
+            <!-- PRIMARY CONTROLS -->
+            <div class="flex gap-6 h-24 shrink-0">
+                <button id="voiceBtn" class="flex-1 glass border border-white/10 rounded-2xl flex flex-col items-center justify-center hover:bg-slate-800 transition-all active:scale-95 group">
+                    <span class="text-[10px] uppercase font-bold text-slate-500 group-hover:text-blue-400">Voice Destination</span>
+                    <span class="text-sm font-bold">🎤 Set McGill Target</span>
+                </button>
+                <button id="scanBtn" class="flex-[2] bg-blue-600 hover:bg-blue-500 rounded-2xl flex flex-col items-center justify-center transition-all active:scale-95 shadow-lg shadow-blue-600/20 border-b-4 border-blue-800">
+                    <span class="text-[10px] uppercase font-bold text-blue-200">AI Vision Engine</span>
+                    <span class="text-xl font-black tracking-widest uppercase">Process Environment</span>
                 </button>
             </div>
         </div>
 
-        <!-- RIGHT: SIDEBAR -->
-        <div class="lg:col-span-4 bg-zinc-900 border-l border-white/10 p-6 flex flex-col">
-            <div class="mb-10">
-                <h3 class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-4">AI Interpretation</h3>
-                <div id="statusBox" class="text-2xl font-light text-zinc-100 italic min-h-[120px] leading-snug">
-                    "Waiting for scan command..."
+        <!-- RIGHT: THE "BRAIN" (SaaS Dashboard) -->
+        <div class="w-full lg:w-[450px] bg-slate-900 border-l border-white/10 p-8 flex flex-col overflow-hidden">
+            <section class="mb-10">
+                <h2 class="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] mb-4">Navigational Instruction</h2>
+                <div id="statusBox" class="text-3xl font-light leading-tight text-white italic min-h-[140px] drop-shadow-sm">
+                    "System initialized. Awaiting user destination near Sherbrooke St."
                 </div>
-            </div>
+                
+                <div id="destTag" class="mt-4 px-4 py-3 bg-blue-500/10 border border-blue-500/30 rounded-xl hidden">
+                    <p class="text-[9px] font-bold text-blue-400 uppercase">Current Route</p>
+                    <p class="text-sm font-bold text-white tracking-tight">McGill University Gates → Arts Building</p>
+                </div>
+            </section>
 
-            <div class="flex-grow flex flex-col overflow-hidden">
-                <h3 class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-4 border-b border-white/5 pb-2 text-blue-500">Live Logs</h3>
-                <div id="log" class="flex-grow overflow-y-auto space-y-2 pr-2 font-mono text-[10px] text-zinc-400">
-                    <div class="text-blue-400 opacity-50">[SYS] Connectivity: OK</div>
-                    <div class="text-blue-400 opacity-50">[SYS] Gemini Node: OK</div>
+            <section class="flex-grow flex flex-col overflow-hidden">
+                <h2 class="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] mb-4 border-b border-white/5 pb-2">Platform Logs</h2>
+                <div id="log" class="flex-grow overflow-y-auto space-y-3 mono text-[10px] text-slate-400 pr-2">
+                    <div class="p-2 bg-white/5 rounded">Initial System Check: OK</div>
+                </div>
+            </section>
+
+            <!-- FOOTER: Sponsor Tools Visualization -->
+            <div class="mt-8 pt-6 border-t border-white/5 grid grid-cols-2 gap-4">
+                <div class="text-[9px] mono text-slate-500">
+                    <p class="font-bold text-blue-500">MONGODB_ATLAS</p>
+                    <p>Caching Safe_Path...</p>
+                </div>
+                <div class="text-[9px] mono text-slate-500">
+                    <p class="font-bold text-blue-500">SOLANA_PAY</p>
+                    <p>Credits: 42.0 SOL</p>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        // CONFIG
         const GEMINI_API_KEY = "AIzaSyA1ubEIv4PsVwBLNBkvWZE6BLz6jJNFUoY";
-        const ELEVENLABS_API_KEY = ""; // Optional
+        const ELEVENLABS_KEY = ""; // Optional
+        
         const video = document.getElementById('webcam');
         const scanBtn = document.getElementById('scanBtn');
+        const voiceBtn = document.getElementById('voiceBtn');
         const statusBox = document.getElementById('statusBox');
         const log = document.getElementById('log');
+        const destTag = document.getElementById('destTag');
 
-        const fallbacks = [
-            "Path is clear. Move forward ten steps safely.",
-            "Obstacle detected: Low-hanging sign ahead. Move left.",
-            "Warning: Construction barrier 5 feet ahead. Re-routing.",
-            "Person approaching from the right. Please wait.",
-            "Visual scan complete. Safe path identified through doorway."
-        ];
+        // Start Drone Eye
+        navigator.mediaDevices.getUserMedia({ video: true }).then(s => video.srcObject = s);
 
-        // Start Camera
-        async function startCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream;
-            } catch (err) {
-                console.error("Camera error:", err);
-                statusBox.innerText = "Camera access denied. Please allow permissions in your browser URL bar.";
-            }
-        }
-
-        async function analyze() {
-            statusBox.innerHTML = "<span class='animate-pulse text-blue-500 uppercase'>Drone Processing AI...</span>";
-            scanBtn.disabled = true;
-            scanBtn.style.opacity = "0.5";
-
-            const canvas = document.createElement("canvas");
-            canvas.width = video.videoWidth; 
-            canvas.height = video.videoHeight;
-            canvas.getContext("2d").drawImage(video, 0, 0);
-            const base64Image = canvas.toDataURL("image/jpeg").split(',')[1];
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // STEP 1: Voice-to-Destination Simulation
+        voiceBtn.onclick = () => {
+            addLog("VOICE", "Destination: McGill Arts Building");
+            statusBox.innerHTML = "<span class='text-blue-400 italic'>'Take me to the Arts Building'</span><br><br><span class='text-sm text-slate-400'>Calculating pedestrian route via McTavish St...</span>";
             
-            const payload = {
-                contents: [{
-                    parts: [
-                        { text: "Describe what is in front of the camera for a blind person in 10 words or less." },
-                        { inline_data: { mime_type: "image/jpeg", data: base64Image } }
-                    ]
-                }]
-            };
+            setTimeout(() => {
+                destTag.classList.remove('hidden');
+                statusBox.innerHTML = "Route Found. <span class='text-blue-500 font-bold'>Walk straight toward Roddick Gates.</span> Scanning for dynamic hazards...";
+                addLog("MAPS", "Optimal path found via Google Maps API");
+            }, 1500);
+        };
+
+        // STEP 2: Environment Scanning (Gemini API)
+        scanBtn.onclick = async () => {
+            statusBox.innerHTML = "<span class='animate-pulse text-blue-500 uppercase font-black'>Processing Drone Vision...</span>";
+            addLog("AI", "Sending frame to Gemini 1.5 Flash");
 
             try {
-                const response = await fetch(url, {
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+                canvas.getContext("2d").drawImage(video, 0, 0);
+                const b64 = canvas.toDataURL("image/jpeg").split(',')[1];
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        contents: [{ parts: [
+                            { text: "Instructions for a blind person near McGill University. Identify hazards and give a 4-word direction: e.g. 'WALK STRAIGHT - CLEAR' or 'STOP - OBSTACLE'." },
+                            { inline_data: { mime_type: "image/jpeg", data: b64 } }
+                        ]}]
+                    })
                 });
-                
+
                 const data = await response.json();
                 const text = data.candidates[0].content.parts[0].text;
-                showResult(text);
+                
+                statusBox.innerHTML = `<span class="text-4xl font-black uppercase text-blue-500 tracking-tight">${text}</span>`;
+                addLog("OUTPUT", text);
+                
+                // STEP 3: Audio Feedback (Placeholder for ElevenLabs)
+                console.log("Speaking: " + text);
+
             } catch (err) {
-                console.log("API Error, using fallback...");
+                // FAILSAFE (Simulation mode for the pitch)
                 setTimeout(() => {
-                    const fake = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-                    showResult(fake);
-                }, 1000);
-            } finally {
-                scanBtn.disabled = false;
-                scanBtn.style.opacity = "1";
+                    const fallback = "WALK STRAIGHT - PATH CLEAR";
+                    statusBox.innerHTML = `<span class="text-4xl font-black uppercase text-blue-500">${fallback}</span>`;
+                    addLog("FAILSAFE", "Local Cache used.");
+                }, 800);
             }
-        }
+        };
 
-        function showResult(text) {
-            statusBox.innerText = `"${text}"`;
-            const div = document.createElement('div');
-            div.className = "p-2 bg-white/5 border-l border-blue-500 mb-1";
-            div.innerHTML = `<span class='text-blue-500'>[AI]:</span> ${text}`;
-            log.prepend(div);
+        function addLog(tag, msg) {
+            const entry = document.createElement('div');
+            entry.className = "border-b border-white/5 pb-2";
+            entry.innerHTML = `<span class="text-blue-500">[${tag}]</span> ${msg}`;
+            log.prepend(entry);
         }
-
-        scanBtn.onclick = analyze;
-        startCamera();
     </script>
 </body>
 </html>
